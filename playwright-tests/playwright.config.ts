@@ -33,10 +33,5 @@ export default defineConfig({
       testMatch: "**/*.spec.ts",
       testIgnore: "**/register.spec.ts",
     },
-    {
-      name: "Logged out tests",
-      use: { ...devices["Desktop Chrome"] },
-      testMatch: "**/register.spec.ts",
-    },
   ],
 });

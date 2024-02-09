@@ -12,7 +12,7 @@ export class Task {
   }
   async createTodo(task: string, assignedUser: string) {
     await this.page.getByTestId("navbar-add-todo-link").click();
-    await this.page.getByTestId("form-title-field").fill("this is a todo");
+    await this.page.getByTestId("form-title-field").fill(task);
     await this.page.locator(".css-2b097c-container").click();
     await this.page.locator(".css-26l3qy-menu").getByText(assignedUser).click();
     await this.page.getByTestId("form-submit-button").click();
