@@ -28,7 +28,7 @@ export class Task {
 
     const tableRow = await this.getTable(task);
 
-    expect(tableRow).not.toBeNull();
+    expect((await this.getTable(task)).innerText).not.toBeNull();
   }
 
   async getTable(taskName: string) {

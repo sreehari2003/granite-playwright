@@ -6,9 +6,8 @@ import { Users } from "../constants";
 import { STORAGE_STATE } from "../playwright.config";
 
 test.describe("Authentication", () => {
-  const loginUser = Users.user;
-
   test("should login with the correct credentials", async ({ page, auth }) => {
+    const loginUser = Users.admin;
     await page.goto("http://localhost:3000");
     await auth.login(loginUser);
     await expect(page.getByTestId("navbar-username-label")).toBeVisible();
