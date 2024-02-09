@@ -30,11 +30,8 @@ test.describe("comment ui", () => {
     await test.step("Go to that newly created todo info and add comment as admin", async () => {
       const latestTodo = await todoMethods.getTable(todoName);
       await latestTodo.click();
-      await page.waitForResponse(response =>
-        response.url().includes(todoName.trim().split(" ").join("-"))
-      );
 
-      await todoMethods.createComment(assignerComment);
+      await todoMethods.createComment(assignerComment, todoName);
       expect(await page.locator("h1").innerText()).toBe(todoName);
     });
 
@@ -49,11 +46,27 @@ test.describe("comment ui", () => {
       await page.waitForResponse(response =>
         response.url().includes(todoName.trim().split(" ").join("-"))
       );
-      await todoMethods.createComment(assigneeComment);
+      await todoMethods.createComment(assigneeComment, todoName);
       expect(await page.locator("h1").innerText()).toBe(todoName);
     });
 
-    // Close the browser after the test steps are complete
-    await browser.close();
+    const taskComment = await page.$$('[data-testid="task-comment"]');
+
+    const allComments = await Promise.all(
+      taskComment.map(async element => {
+        const textContent = await element.textContent();
+        return textContent?.trim();
+      })
+    );
+    // Check if both admin and user comments exist in the array
+    const isAdminCommentExist = allComments.some(comment =>
+      comment.includes(assignerComment.trim())
+    );
+    const isUserCommentExist = allComments.some(comment =>
+      comment.includes(assigneeComment.trim())
+    );
+
+    // Expect both comments to be present in the array
+    expect(isAdminCommentExist && isUserCommentExist).toBe(true);
   });
 });

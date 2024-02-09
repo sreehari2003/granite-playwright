@@ -3,15 +3,25 @@ import { Page, expect } from "@playwright/test";
 export class Task {
   constructor(private page: Page) {}
 
-  async createComment(input: string) {
+  async createComment(input: string, todoName: string) {
     await this.page.getByTestId("comments-text-field").fill(input);
     await this.page.getByTestId("comments-submit-button").click();
-    const taskCommentContents = await this.page.getByTestId(
-      "task-comment-content"
+    await this.page.waitForResponse(response =>
+      response.url().includes(todoName)
     );
-    await expect(
-      taskCommentContents.some(element => element.innerText.includes(input))
-    ).toBeTruthy();
+    const taskCommentContents = await this.page.$$(
+      '[data-testid="task-comment-content"]'
+    );
+
+    // Assert that at least one element with the specified text is present
+    const isTextPresent = await Promise.all(
+      taskCommentContents.map(async element => {
+        const textContent = await element.textContent();
+        return textContent.includes(input);
+      })
+    );
+
+    await expect(isTextPresent.some(result => result)).toBeTruthy();
   }
   async createTodo(task: string, assignedUser: string) {
     await this.page.getByTestId("navbar-add-todo-link").click();

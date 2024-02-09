@@ -12,6 +12,9 @@ export class Auth {
     await this.page.getByTestId("login-email-field").fill(email);
     await this.page.getByTestId("login-password-field").fill(password);
     await this.page.getByTestId("login-submit-button").click();
+    await this.page.waitForResponse(response =>
+      response.url().includes("session")
+    );
     await expect(this.page.getByTestId("navbar-logout-link")).toBeVisible();
   }
 
