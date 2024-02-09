@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-export const STORAGE_STATE = "./auth/auth.json";
+export const STORAGE_STATE = ".auth/auth.json";
 
 export default defineConfig({
   testDir: "./e2e",
