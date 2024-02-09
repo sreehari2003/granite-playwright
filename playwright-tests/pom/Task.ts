@@ -6,9 +6,12 @@ export class Task {
   async createComment(input: string) {
     await this.page.getByTestId("comments-text-field").fill(input);
     await this.page.getByTestId("comments-submit-button").click();
-    await expect(this.page.getByTestId("task-comment-content")).toContainText(
-      input
+    const taskCommentContents = await this.page.getByTestId(
+      "task-comment-content"
     );
+    await expect(
+      taskCommentContents.some(element => element.innerText.includes(input))
+    ).toBeTruthy();
   }
   async createTodo(task: string, assignedUser: string) {
     await this.page.getByTestId("navbar-add-todo-link").click();

@@ -15,7 +15,6 @@ test.describe("Todo creations and associated features", () => {
     await page.goto("http://localhost:3000");
     const assigneeUser = Users.admin;
     const taskMethods = new Task(page);
-    console.log(taskName);
     await taskMethods.createTodo(taskName, Users.user.name);
   });
 });

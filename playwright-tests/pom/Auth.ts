@@ -17,5 +17,6 @@ export class Auth {
 
   async logOut() {
     await this.page.getByTestId("navbar-logout-link").click();
+    await expect(this.page.getByTestId("navbar-logout-link")).not.toBeVisible();
   }
 }

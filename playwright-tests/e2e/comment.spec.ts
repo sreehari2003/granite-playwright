@@ -1,17 +1,24 @@
-import { expect, chromium } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { test } from "../fixtures";
 import { Users } from "../constants";
 import { Task } from "../pom/Task";
 import { Auth } from "../pom/Auth";
+import { faker } from "@faker-js/faker";
 
 test.describe("comment ui", () => {
+  let todoName: string;
+
+  test.beforeEach(async ({ page }) => {
+    todoName = faker.word.verb(5);
+  });
+
   test("comment on task as creator and assigned user", async ({
     page,
     auth,
+    browser,
   }) => {
     page.goto("/");
     const todoMethods = new Task(page);
-    const todoName = "hello todo";
 
     const assignerComment = "hi i am a assigner";
     const assigneeComment = "hi i am a assignee";
@@ -31,30 +38,19 @@ test.describe("comment ui", () => {
       expect(await page.locator("h1").innerText()).toBe(todoName);
     });
 
-    // creating new browserContext to login the assignee
-    const browser = await chromium.launch();
-    const assigneeContext = await browser.newContext({
-      storageState: { cookies: [], origins: [] },
-    });
-    const assigneePage = await assigneeContext.newPage();
-    const loginPage = new Auth(assigneePage);
-    const assigneeTasksPage = new Task(assigneePage);
-
-    await test.step("Login as the assignee", async () => {
-      await loginPage.login(Users.admin);
+    await test.step("Logout the admin and login as assigned user", async () => {
+      await auth.logOut();
+      await auth.login(Users.user);
     });
 
     await test.step("Go to the assigned task and comment", async () => {
-      const assignedUserTask = new Task(assigneePage);
-      const assignedTodo = await assignedUserTask.getTable(todoName);
-
+      const assignedTodo = await todoMethods.getTable(todoName);
       await assignedTodo.click();
-      await assigneePage.waitForResponse(response =>
+      await page.waitForResponse(response =>
         response.url().includes(todoName.trim().split(" ").join("-"))
       );
-
       await todoMethods.createComment(assigneeComment);
-      expect(await assigneePage.locator("h1").innerText()).toBe(todoName);
+      expect(await page.locator("h1").innerText()).toBe(todoName);
     });
 
     // Close the browser after the test steps are complete
