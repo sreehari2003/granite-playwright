@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { Users } from "../constants";
+import { Users } from "../../constants";
 import { Task } from "../pom/Task";
 import { faker } from "@faker-js/faker";
 

@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures";
-import { Users } from "../constants";
+import { Users } from "../../constants";
 import { Task } from "../pom/Task";
 import { Auth } from "../pom/Auth";
 import { faker } from "@faker-js/faker";
