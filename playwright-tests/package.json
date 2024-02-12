@@ -1,0 +1,17 @@
+{
+  "name": "playwright-tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.41.2",
+    "@types/node": "^20.11.17"
+  },
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "npx playwright test --ui"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1"
+  }
+}

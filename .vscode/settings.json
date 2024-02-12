@@ -10,5 +10,6 @@
   "editor.formatOnSave": true,
   "yaml.format.enable": true,
   "typescript.validate.enable": false,
-  "javascript.validate.enable": false
+  "javascript.validate.enable": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
