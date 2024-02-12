@@ -11,6 +11,11 @@ interface Comments {
   taskName: string;
 }
 
+interface CommentCount {
+  taskName: string;
+  count: number;
+}
+
 interface TaskNameWithCreatorName extends TaskName {
   userName?: string;
 }
@@ -87,5 +92,19 @@ export class TaskPage {
     const element = await this.page.getByText(comment);
 
     await expect(element).toContainText(comment);
+  };
+
+  checkForCount = async ({ taskName, count }: CommentCount) => {
+    await this.page.goto("/");
+    await expect(
+      this.page
+        .getByTestId("tasks-pending-table")
+        .getByRole("row", {
+          name: taskName,
+        })
+        .getByRole("cell", {
+          name: count,
+        })
+    ).toBeVisible();
   };
 }
