@@ -71,17 +71,6 @@ export class TaskPage {
     ).toContainText(taskName);
   };
 
-  getTable = async (taskName: string) => {
-    return await this.page
-      .getByTestId("tasks-pending-table")
-      .getByRole("row", {
-        name: taskName,
-      })
-      .getByRole("cell", {
-        name: taskName,
-      });
-  };
-
   createCommentAndVerify = async ({ comment, taskName }: Comments) => {
     await this.page.getByTestId("comments-text-field").fill(comment);
     await this.page.getByTestId("comments-submit-button").click();

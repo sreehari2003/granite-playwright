@@ -12,7 +12,7 @@ test.describe("Comment Page", () => {
   let assigneeComment: string;
   let assignerComment: string;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(({ page }) => {
     todoName = faker.word.verb(5);
     assigneeComment = faker.lorem.sentence();
     assignerComment = faker.lorem.sentence();
@@ -36,13 +36,10 @@ test.describe("Comment Page", () => {
     await test.step("step 2 - go to that newely created task", async () => {
       await page.getByTestId("tasks-pending-table").getByText(todoName).click();
 
-      const endPoint =
-        todoName.split(" ").length > 1
-          ? todoName.split(" ").join("-")
-          : todoName;
+      const endPoint = todoName.replace(/\s+/g, "-");
 
       await page.waitForResponse(response => response.url().includes(endPoint));
-      expect(await page.locator("h1").innerText()).toBe(todoName);
+      expect(await page.locator("h1")).toHaveText(todoName);
     });
 
     await test.step("step 3 - create comment as assigner in the todo and verify", async () => {
@@ -52,7 +49,7 @@ test.describe("Comment Page", () => {
       });
     });
 
-    await test.step("step 4 - check of comment count was increased for the task", async () => {
+    await test.step("step 4 - check if comment count was increased for the task", async () => {
       await taskPage.checkForCount({
         taskName: todoName,
         count: 1,
@@ -75,10 +72,7 @@ test.describe("Comment Page", () => {
         .getByText(todoName)
         .click();
 
-      const endPoint =
-        todoName.split(" ").length > 1
-          ? todoName.split(" ").join("-")
-          : todoName;
+      const endPoint = todoName.replace(/\s+/g, "-");
 
       await assigneePage.waitForResponse(response =>
         response.url().includes(endPoint)
