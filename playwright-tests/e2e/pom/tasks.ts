@@ -72,11 +72,13 @@ export class TaskPage {
   };
 
   createCommentAndVerify = async ({ comment, taskName }: Comments) => {
-    await this.page.getByTestId("comments-text-field").fill(comment);
-    await this.page.getByTestId("comments-submit-button").click();
-    await this.page.waitForResponse(response =>
+    const addCommentApi = this.page.waitForResponse(response =>
       response.url().includes(taskName.split(" ").join("-"))
     );
+    await this.page.getByTestId("comments-text-field").fill(comment);
+    await this.page.getByTestId("comments-submit-button").click();
+
+    await addCommentApi();
 
     const element = await this.page.getByText(comment);
 

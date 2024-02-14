@@ -24,7 +24,7 @@ test.describe("Comment Page", () => {
     browser,
     taskPage,
   }) => {
-    page.goto("/");
+    await page.goto("/");
 
     await test.step("step 1 - create a new task by assigner", () =>
       taskPage.createTaskAndVerify({
@@ -33,12 +33,13 @@ test.describe("Comment Page", () => {
       }));
 
     await test.step("step 2 - go to that newely created task", async () => {
-      await page.getByTestId("tasks-pending-table").getByText(todoName).click();
-
       const endPoint = todoName.replace(/\s+/g, "-");
-
-      await page.waitForResponse(response => response.url().includes(endPoint));
-      expect(await page.locator("h1")).toHaveText(todoName);
+      const waitForTask = page.waitForResponse(response =>
+        response.url().includes(endPoint)
+      );
+      await page.getByTestId("tasks-pending-table").getByText(todoName).click();
+      await endPoint();
+      await await expect(page.locator("h1")).toHaveText(todoName);
     });
 
     await test.step("step 3 - create comment as assigner in the todo and verify", () =>
@@ -68,35 +69,36 @@ test.describe("Comment Page", () => {
       assigneeTasks = new TaskPage(assigneePage);
     });
 
-    await test.step("step 5  - Login as assigned user and go to the specified task", async () => {
+    await test.step("step 6  - Login as assigned user and go to the specified task", async () => {
       await assigneePage.goto("/");
+      const endPoint = todoName.replace(/\s+/g, "-");
+
+      const taskDetailsApi = assigneePage.waitForResponse(response =>
+        response.url().includes(endPoint)
+      );
       await assigneeAuth.loginAndVerifyUser(Users.user);
       await assigneePage
         .getByTestId("tasks-pending-table")
         .getByText(todoName)
         .click();
+      await taskDetailsApi();
 
-      const endPoint = todoName.replace(/\s+/g, "-");
-
-      await assigneePage.waitForResponse(response =>
-        response.url().includes(endPoint)
-      );
-      expect(await assigneePage.locator("h1").innerText()).toBe(todoName);
+      await expect(assigneePage.locator("h1")).toHaveText(todoName);
     });
 
-    await test.step("step 6 - Create comment as assigned user", () =>
+    await test.step("step 7 - Create comment as assigned user", () =>
       assigneeTasks.createCommentAndVerify({
         comment: assigneeComment,
         taskName: todoName,
       }));
 
-    await test.step("step 6 - check for comment count", () =>
+    await test.step("step 8 - check for comment count", () =>
       assigneeTasks.checkForCount({
         taskName: todoName,
         count: 2,
       }));
 
-    assigneePage.close();
-    assigneeContext.close();
+    await assigneePage.close();
+    await assigneeContext.close();
   });
 });
