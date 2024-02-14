@@ -78,7 +78,7 @@ export class TaskPage {
     await this.page.getByTestId("comments-text-field").fill(comment);
     await this.page.getByTestId("comments-submit-button").click();
 
-    await addCommentApi();
+    await addCommentApi;
 
     const element = await this.page.getByText(comment);
 

@@ -38,7 +38,7 @@ test.describe("Comment Page", () => {
         response.url().includes(endPoint)
       );
       await page.getByTestId("tasks-pending-table").getByText(todoName).click();
-      await endPoint();
+      await waitForTask;
       await await expect(page.locator("h1")).toHaveText(todoName);
     });
 
@@ -81,7 +81,7 @@ test.describe("Comment Page", () => {
         .getByTestId("tasks-pending-table")
         .getByText(todoName)
         .click();
-      await taskDetailsApi();
+      await taskDetailsApi;
 
       await expect(assigneePage.locator("h1")).toHaveText(todoName);
     });
